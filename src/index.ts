@@ -1,8 +1,8 @@
 import {app} from "./app";
 import {config} from "dotenv";
 import logger from "./logger";
-import {closeDB, run} from "./config/mongodb.connection";
-import {disconnect} from "mongoose";
+import {closeDB, run} from "./config/mongodb/mongodb.connection";
+import {closeRedis, initRedis} from "./config/redis/redis.client";
 import * as http from "node:http";
 
 config()
@@ -13,12 +13,15 @@ let server: http.Server;
 export async function main() {
     try{
         await run()
+        await initRedis()
         server = app.listen(PORT, () => {
             logger.info(`Server is running on port ${PORT}`)
         })
     }catch(e: any){
         logger.error(`Error in starting the main(): ${e.message}`)
+        server?.close()
         await closeDB()
+        await closeRedis()
         process.exit(1)
     }
 }
@@ -30,7 +33,8 @@ process.on('SIGINT', gracefulShutdown);
 async function gracefulShutdown() {
     try{
         logger.info('Shutting down server...');
-        await disconnect();
+        await closeDB()
+        await closeRedis()
         if(server){
             server.close(() => {
                 logger.info('Server closed');

@@ -54,6 +54,8 @@ export const JWT = {
 
 export const POST = {
     CREATED: 'POST_CREATED',
+    COMMENT_CREATED: 'COMMENT_CREATED',
+    NOT_FOUND: 'POST_NOT_FOUND',
 }
 
 

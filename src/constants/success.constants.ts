@@ -15,3 +15,8 @@ export const MONGO_EVENTS = {
 export const MONGO_MESSAGES = {
     MONGO_CONNECTION_SUCCESS: 'MongoDB connected',
 }
+
+export const POST_EVENTS = {
+    CREATED_SUCCESS: 'Post created successfully',
+    COMMENT_CREATED: 'Post comment created successfully',
+}

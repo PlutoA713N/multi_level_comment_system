@@ -1,4 +1,4 @@
-import {body, param, query} from 'express-validator';
+import {body, param} from 'express-validator';
 import {POST_VALIDATION_MESSAGES} from "../../constants/error.details.constants";
 import {CONSTANTS} from "../../constants";
 

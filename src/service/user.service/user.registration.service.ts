@@ -1,4 +1,3 @@
-import {Request} from "express";
 import {generateHash} from "../../utils/auth";
 import {UserModel} from "../../models/user/user.model";
 import {storeUserToken} from "../../config/redis/redis.utils";
@@ -23,29 +22,30 @@ export async function registerUserService(username: string, email: string, passw
         const usernameInDB = await checkFieldExists(UserModel,"username", username);
 
         if (usernameInDB.isExists) {
-            const error = createApiError({status: HTTP.CONFLICT, code: VALIDATION_ERROR_CODES.USERNAME_EXISTS, detail: VALIDATION_ERROR_DETAILS.EMAIL_EXISTS})
+            const error = createApiError({status: HTTP.CONFLICT, code: VALIDATION_ERROR_CODES.USERNAME_EXISTS, detail: VALIDATION_ERROR_DETAILS.USERNAME_EXISTS})
             throw error;
         }
 
         const emailInDB = await checkFieldExists(UserModel,"email", email);
 
         if (emailInDB.isExists) {
-            const error = createApiError({status: HTTP.CONFLICT, code:VALIDATION_ERROR_CODES.EMAIL_EXISTS, detail: VALIDATION_ERROR_DETAILS.USERNAME_EXISTS});
+            const error = createApiError({status: HTTP.CONFLICT, code:VALIDATION_ERROR_CODES.EMAIL_EXISTS, detail: VALIDATION_ERROR_DETAILS.EMAIL_EXISTS});
             throw error;
         }
 
         const newUser = await userData.save();
 
         const payload = {
-            userId: userData._id.toString(),
-            username: userData.username,
-            email: userData.email,
+            userId: newUser._id.toString(),
+            username: newUser.username,
+            email: newUser.email,
         };
 
         const jwtToken =  jwtSign(payload);
-        await  storeUserToken(userData._id.toString(), jwtToken)
+        await  storeUserToken(newUser._id.toString(), jwtToken)
 
-        return {user: newUser, token: jwtToken};
+        const { password: _, ...userSafe } = newUser.toObject();
+        return {user: userSafe, token: jwtToken};
 
     }catch(e){
         logger.error('Error in registerUserService:', e)

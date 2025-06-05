@@ -7,10 +7,12 @@ import {errorHandler} from "./middleware/express_middleware/error.middleware";
 import {helmetOptions} from "./helmet/helmet.options";
 import {apiLimiter} from "./middleware/express_middleware/rate.limiter.middleware";
 import {requestIdMiddleware} from "./middleware/express_middleware/requestId.middleware";
-import healthRoutes from "./routes/health.routes";
 import {notFoundMiddleware} from "./middleware/express_middleware/not.found.middleware";
 
+import healthRoutes from "./routes/health.routes";
 import userRoutes from "./routes/user/index"
+import postRoutes from "./routes/post/index"
+
 
 export const app = express();
 
@@ -27,6 +29,8 @@ setupSwaggerDocs(app)
 
 app.use("/health", healthRoutes)
 app.use("/user", userRoutes)
+app.use("/api/posts", postRoutes)
+
 
 app.use(notFoundMiddleware)
 app.use(errorHandler)

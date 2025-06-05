@@ -11,6 +11,8 @@ const API_RATE_LIMIT_WINDOW_MINUTES = Number(getEnv('API_RATE_LIMIT_WINDOW_MINUT
 const API_RATE_LIMIT_REQUESTS = Number(getEnv('API_RATE_LIMIT_REQUESTS', false, '50'))
 const LOGIN_RATE_LIMIT_WINDOW_MINUTES = Number(getEnv('LOGIN_RATE_LIMIT_WINDOW_MINUTES', false, '10'));
 const LOGIN_RATE_LIMIT_REQUESTS = Number(getEnv('LOGIN_RATE_LIMIT_REQUESTS', false, '5'))
+const POST_COMMENT_RATE_LIMIT_WINDOW_MINUTES = Number(getEnv('POST_COMMENT_RATE_LIMIT_WINDOW_MINUTES', false, '10'));
+const POST_COMMENT_RATE_LIMTI_REQUESTS = Number(getEnv('POST_COMMENT_RATE_LIMTI_REQUESTS', false, '5'))
 
 function createRateLimitHandler(code: string, detail: string, logPrefix: string )  {
     return (req: Request, res: Response) => {
@@ -47,4 +49,13 @@ export const loginRateLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: createRateLimitHandler(ERROR_CODES.TOO_MANY_LOGIN_ATTEMPTS, HTTP_ERROR_DETAILS.TOO_MANY_LOGIN_ATTEMPTS, 'LoginRateLimit')
+})
+
+
+export const postCommentRateLimiter = rateLimit({
+    windowMs: POST_COMMENT_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000,
+    limit: POST_COMMENT_RATE_LIMTI_REQUESTS,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: createRateLimitHandler(ERROR_CODES.TOO_MANY_REQUESTS, HTTP_ERROR_DETAILS.TOO_MANY_COMMENT_ATTEMPTS, 'CommentRateLimit')
 });

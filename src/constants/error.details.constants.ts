@@ -33,13 +33,25 @@ export const POST_VALIDATION_MESSAGES = {
         REQUIRED: "Title is required",
         TYPE: "Title must be a string",
         EMPTY: "Title cannot be empty",
-        LENGTH: "Title length should be minimum 3 characters long",
+        LENGTH: "Title length should be minimum 2 characters long",
     },
     CONTENT: {
         REQUIRED: "Content is required",
         TYPE: "Content must be a string",
         EMPTY: "Content cannot be empty",
         LENGTH: "Content length should be minimum 2 characters long",
+    },
+    TEXT: {
+        REQUIRED: "text field is required",
+        TYPE: "text value must be a string",
+        EMPTY: "text value cannot be empty",
+        LENGTH: "text must be at least 2 characters long",
+    },
+    POSTID: {
+        REQUIRED: "PostID is required in the params",
+        TYPE: 'params post id must be a valid MongoDB ObjectId',
+        EMPTY: "PostID cannot be empty",
+
     }
 }
 
@@ -52,7 +64,8 @@ export const USER_ERROR_DETAILS = {
 
 export const HTTP_ERROR_DETAILS = {
     TOO_MANY_REQUESTS: 'Too many requests, please try again later.',
-    TOO_MANY_LOGIN_ATTEMPTS: 'You’ve exceeded the number of login attempts. Please wait before retrying.'
+    TOO_MANY_LOGIN_ATTEMPTS: 'You’ve exceeded the number of login attempts. Please wait before retrying.',
+    TOO_MANY_COMMENT_ATTEMPTS: 'You’ve exceeded the allowed number of comments. Please slow down and try again later.',
 }
 
 export const MONGO_ERROR_DETAILS = {
@@ -76,6 +89,10 @@ export const JWT_ERROR = {
     VERIFICATION_FAILED: 'Authentication token verification failed.',
     INVALID_EXPIRY_FORMAT: "Expiry time format is invalid. Use a number followed by 's', 'm', 'h', or 'd'.",
     INVALID_EXPIRY_UNIT: "Expiry time unit is invalid. Allowed units are 's', 'm', 'h', or 'd'.",
+}
+
+export const POST_ERROR = {
+    NOT_FOUND: "The post you are trying to comment on does not exist."
 }
 
 

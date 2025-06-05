@@ -57,8 +57,72 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /api/posts:
+    post:
+      summary: Create a post
+      tags:
+        - Auth
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/PostSuccess'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/posts/{postId}/comments:
+    post:
+      summary: Create a post comment
+      tags:
+        - Auth
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The id of the post to comment on
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCommentRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/PostCommentSuccess'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: jwt
+
   schemas:
+
     RegisterRequest:
       type: object
       required:
@@ -178,6 +242,31 @@ components:
           type: string
           format: date-time
 
+    PostRequest:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          description: Title of the post
+          example: Jungle Book
+        content:
+          type: string
+          description: Content of the post
+          example: Story of animals & wonder boy mogli
+
+    PostCommentRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: Comment to the post
+          example: this is my comment to the post.
+
   responses:
     RegisterSuccess:
       description: Successful registration
@@ -210,6 +299,45 @@ components:
             data:
               token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
               userId: "12345"
+            requestId: abcde-67890
+            timestamp: 2025-06-03T12:10:00Z
+
+    PostSuccess:
+      description: Post created successfull
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSuccessResponse'
+          example:
+            status: 201
+            result: success
+            code: Post created successfully
+            message:
+            data:
+              title: Jungle Book
+              content: Story of animals & wonder boy mogli
+              userId: "12345"
+            requestId: abcde-67890
+            timestamp: 2025-06-03T12:10:00Z
+
+    PostCommentSuccess:
+      description: Post comment created successfull
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSuccessResponse'
+          example:
+            status: 201
+            result: success
+            code: Post comment created successfully
+            message:
+            data:
+              text: Story of animals & wonder boy mogli
+              createdAt: 03-03-2023
+              postId: "12345"
+              parentCommentId: null
+              replies: []
+              totalReplies: 0
             requestId: abcde-67890
             timestamp: 2025-06-03T12:10:00Z
 

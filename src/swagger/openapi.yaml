@@ -71,7 +71,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostRequest'
       responses:
-        200:
+        201:
           $ref: '#/components/responses/PostSuccess'
         400:
           $ref: '#/components/responses/ValidationError'
@@ -93,6 +93,7 @@ paths:
           required: true
           schema:
             type: string
+            example: 1
           description: The id of the post to comment on
       security:
         - BearerAuth: [ ]
@@ -103,8 +104,48 @@ paths:
             schema:
               $ref: '#/components/schemas/PostCommentRequest'
       responses:
-        200:
+        201:
           $ref: '#/components/responses/PostCommentSuccess'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/posts/{postId}/comments/{commentId}/reply:
+    post:
+      summary: Create a reply to comment
+      tags:
+        - Auth
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 1
+          description: The id of the post to comment on
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 2
+            description: The id of the comment to reply on
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostReplyCommentRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/PostReplyCommentSuccess'
         400:
           $ref: '#/components/responses/ValidationError'
         403:
@@ -158,7 +199,7 @@ components:
           type: string
           format: password
           description: User's password
-          example: strongPassword123
+          example: StrongP@ssw0rd
       required:
         - password
       anyOf:
@@ -267,6 +308,16 @@ components:
           description: Comment to the post
           example: this is my comment to the post.
 
+    PostReplyCommentRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: reply to the comment
+          example: this is my reply to the comment.
+
   responses:
     RegisterSuccess:
       description: Successful registration
@@ -340,6 +391,28 @@ components:
               totalReplies: 0
             requestId: abcde-67890
             timestamp: 2025-06-03T12:10:00Z
+
+    PostReplyCommentSuccess:
+      description: Reply comment created successfull
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSuccessResponse'
+          example:
+            status: 201
+            result: success
+            code: Reply comment created successfully
+            message:
+            data:
+              text: Story of animals & wonder boy mogli
+              createdAt: 03-03-2023
+              postId: "12345"
+              parentCommentId: "2"
+              replies: [ ]
+              totalReplies: 0
+            requestId: abcde-67890
+            timestamp: 2025-06-03T12:10:00Z
+
 
     ValidationError:
       description: Validation error

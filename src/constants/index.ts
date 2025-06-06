@@ -1,6 +1,13 @@
 export const CONSTANTS = {
     TITLE: 'title',
     CONTENT: 'content',
-    POSTID: 'postId',
+    POST_ID: 'postId',
     TEXT: 'text',
+    COMMENT_ID: 'commentId',
+    SORT_BY: 'sortBy',
+    SORT_ORDER: 'sortOrder',
+    CREATED_AT: 'createdAt',
+    REPLIES_COUNT: 'repliesCount',
+    ASC: 'asc',
+    DESC: 'desc',
 }

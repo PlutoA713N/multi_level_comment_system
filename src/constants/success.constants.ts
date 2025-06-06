@@ -19,4 +19,6 @@ export const MONGO_MESSAGES = {
 export const POST_EVENTS = {
     CREATED_SUCCESS: 'Post created successfully',
     COMMENT_CREATED: 'Post comment created successfully',
+    REPLY_CREATED: 'Reply to comment created successfully'
+    ,
 }

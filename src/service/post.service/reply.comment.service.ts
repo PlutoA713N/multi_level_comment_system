@@ -11,6 +11,12 @@ export async function replyCommentService(data: { commentId: number; postId: num
     })
 
     const commentDocument = await commentInstance.save()
+
+    await CommentModel.updateOne(
+        {commentId: data.commentId},
+        {$inc: {totalReplies: 1} },
+    )
+
     const commentObject = commentDocument.toObject();
 
     const {_id, __v, userId, ...comment} = commentObject

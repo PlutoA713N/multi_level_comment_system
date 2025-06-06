@@ -13,7 +13,7 @@ interface CheckResult <T> {
     isExists: boolean
 }
 
-export async function checkFieldExists<T = any>(model: Model<any>, field: string, value: string): Promise<CheckResult<T>> {
+export async function checkFieldExists<T = any>(model: Model<any>, field: string, value: any): Promise<CheckResult<T>> {
     try {
         const existingUser = await model.findOne({ [field]: value })
         if (existingUser) {

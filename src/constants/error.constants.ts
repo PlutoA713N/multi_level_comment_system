@@ -56,8 +56,13 @@ export const POST = {
     CREATED: 'POST_CREATED',
     COMMENT_CREATED: 'COMMENT_CREATED',
     NOT_FOUND: 'POST_NOT_FOUND',
+    REPLY_CREATED: 'REPLY_CREATED',
 }
 
+
+export const COMMENT = {
+    NOT_FOUND: 'COMMENT_NOT_FOUND',
+}
 
 
 export type MongoErrorCode = typeof MONGO_ERROR_CODES[keyof typeof MONGO_ERROR_CODES];

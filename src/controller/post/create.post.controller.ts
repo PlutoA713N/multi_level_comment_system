@@ -1,7 +1,7 @@
 import { Response, NextFunction} from "express";
 import logger from "../../logger";
 import {ICustomRequest} from "../../interfaces/Request_interfaces";
-import {postCreateService} from "../../service/post.service/post.create.service";
+import {createPostService} from "../../service/post.service/create.post.service";
 import HTTP from "http-status-codes";
 import {createSuccessResponse} from "../../factory/create.sucess.response";
 import {POST} from "../../constants/error.constants";
@@ -15,7 +15,7 @@ export const createPostController = async (req: ICustomRequest, res: Response, n
         const {_id} = req.user!
         const userId = new Types.ObjectId(_id)
 
-        const {post} = await postCreateService(title, content, userId);
+        const {post} = await createPostService(title, content, userId);
 
         res.status(HTTP.CREATED).json(createSuccessResponse({
             status: HTTP.CREATED,

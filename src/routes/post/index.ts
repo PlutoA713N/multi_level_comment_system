@@ -18,6 +18,7 @@ import {
     lookupPostReplyCommentDocuments
 } from "../../middleware/search_document_middleware";
 import {replyCommentController} from "../../controller/post/reply.comment.controller";
+import {getPostCommentsController} from "../../controller/post/get.post.comments.controller";
 
 const router = Router();
 
@@ -27,6 +28,6 @@ router.post("/:postId/comments", postCommentRateLimiter, authenticationHandler, 
 
 router.post("/:postId/comments/:commentId/reply", replyCommentRateLimiter, authenticationHandler, ...validateReplyCommentRules, validateResult, lookupPostReplyCommentDocuments, replyCommentController );
 
-router.get("/:postId/comments", authenticationHandler, ...validateGetPostsRules, validateResult, lookupPostDocument, )
+router.get("/:postId/comments", authenticationHandler, ...validateGetPostsRules, validateResult, lookupPostDocument, getPostCommentsController)
 
 export default router;

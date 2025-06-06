@@ -62,6 +62,7 @@ export const POST = {
 
 export const COMMENT = {
     NOT_FOUND: 'COMMENT_NOT_FOUND',
+    RETRIEVED: 'COMMENT_RETRIEVED',
 }
 
 

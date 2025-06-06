@@ -5,17 +5,23 @@ import HTTP from "http-status-codes";
 import {createSuccessResponse} from "../../factory/create.sucess.response";
 import {POST} from "../../constants/error.constants";
 import {POST_EVENTS} from "../../constants/success.constants";
+import {Types} from "mongoose";
+import {ICustomRequest} from "../../interfaces/Request_interfaces";
 
-export async function postCommentController(req: Request, res: Response, next: NextFunction) {
+export async function postCommentController(req: ICustomRequest, res: Response, next: NextFunction) {
     try {
         const {postId} = req.params as { postId: string };
         const {text} = req.body;
-        const {newComment} = await postCommentService(postId, text);
+
+        const {_id} = req.user!
+        const userId = new Types.ObjectId(_id)
+
+        const {comment} = await postCommentService(Number(postId), text, userId);
         res.status(HTTP.CREATED).json(createSuccessResponse({
             status: HTTP.CREATED,
             code: POST.COMMENT_CREATED,
             message: POST_EVENTS.COMMENT_CREATED,
-            data: newComment,
+            data: comment,
         }));
         return
     }catch (error) {

@@ -1,27 +1,24 @@
-import mongoose, { model, Schema, Types, Model, HydratedDocument } from "mongoose";
+import mongoose, { Schema, Types, Document, Model } from "mongoose";
 import mongooseSequence from "mongoose-sequence";
 
-const AutoIncrementFactory = (mongooseSequence as any)(mongoose);
-
-interface IReply {
-    id: number;
-    text: string;
-    createdAt: Date;
-}
-
-export interface IComment {
+// 1. Define the interface for a Comment document
+export interface IComment extends Document {
     userId: Types.ObjectId;
     text: string;
     commentId: number;
     createdAt: Date;
     postId: number;
     parentCommentId: number | null;
-    replies: IReply[];
+    replies: {
+        id: number;
+        text: string;
+        createdAt: Date;
+    }[];
     totalReplies: number;
 }
 
-// Create schema with interface type IComment
-const replySchema = new Schema<IReply>({
+// 2. Define schemas
+const replySchema = new Schema({
     id: { type: Number, required: true },
     text: { type: String, required: true },
     createdAt: { type: Date, required: true, default: Date.now },
@@ -38,8 +35,9 @@ const commentSchema = new Schema<IComment>({
     totalReplies: { type: Number, default: 0 },
 });
 
-commentSchema.plugin(AutoIncrementFactory, { inc_field: "commentId" });
+// 3. Add plugin properly
+const AutoIncrement = mongooseSequence(mongoose);
+commentSchema.plugin(AutoIncrement, { inc_field: "commentId" });
 
-// Define model type: Model with HydratedDocument for full typing
-export type CommentDocument = HydratedDocument<IComment>;
-export const CommentModel: Model<IComment> = model("Comment", commentSchema);
+// 4. Export the model with full typing
+export const CommentModel: Model<IComment> = mongoose.model("Comment", commentSchema);

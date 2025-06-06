@@ -1,5 +1,5 @@
-import {body, param} from 'express-validator';
-import {POST_VALIDATION_MESSAGES} from "../../constants/error.details.constants";
+import {body, param, query} from 'express-validator';
+import {POST_VALIDATION_MESSAGES, QUERY_VALIDATION_MESSAGES} from "../../constants/error.details.constants";
 import {CONSTANTS} from "../../constants";
 
 export const postValidators = {
@@ -37,15 +37,15 @@ export const postValidators = {
 
 export const commentValidators = {
     postId: () =>
-        param(CONSTANTS.POSTID)
+        param(CONSTANTS.POST_ID)
             .exists()
-            .withMessage(POST_VALIDATION_MESSAGES.POSTID.REQUIRED)
+            .withMessage(POST_VALIDATION_MESSAGES.POST_ID.REQUIRED)
             .bail()
             .notEmpty()
-            .withMessage(POST_VALIDATION_MESSAGES.POSTID.EMPTY)
+            .withMessage(POST_VALIDATION_MESSAGES.POST_ID.EMPTY)
             .bail()
-            .isMongoId()
-            .withMessage(POST_VALIDATION_MESSAGES.POSTID.TYPE)
+            .isInt()
+            .withMessage(POST_VALIDATION_MESSAGES.POST_ID.TYPE)
     ,
 
     text: () =>
@@ -62,6 +62,43 @@ export const commentValidators = {
                 .isLength({ min: 2 })
                 .withMessage(POST_VALIDATION_MESSAGES.TEXT.LENGTH)
                 .trim()
-                .escape()
+                .escape(),
 
+
+    commentId: () =>
+        param(CONSTANTS.COMMENT_ID)
+            .exists()
+            .withMessage(POST_VALIDATION_MESSAGES.COMMENT_ID.REQUIRED)
+            .bail()
+            .notEmpty()
+            .withMessage(POST_VALIDATION_MESSAGES.COMMENT_ID.EMPTY)
+            .bail()
+            .isInt()
+            .withMessage(POST_VALIDATION_MESSAGES.COMMENT_ID.TYPE)
+
+}
+
+
+export const queryValidators = {
+    sortBy: () =>
+        query(CONSTANTS.SORT_BY)
+            .optional()
+            .isString()
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_BY.TYPE)
+            .notEmpty()
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_BY.EMPTY)
+            .bail()
+            .isIn([CONSTANTS.CREATED_AT, CONSTANTS.REPLIES_COUNT])
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_BY.INVALID),
+
+    sortOrder: () =>
+        query(CONSTANTS.SORT_ORDER)
+            .optional()
+            .isString()
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_ORDER.TYPE)
+            .notEmpty()
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_ORDER.EMPTY)
+            .bail()
+            .isIn([CONSTANTS.ASC, CONSTANTS.DESC])
+            .withMessage(QUERY_VALIDATION_MESSAGES.SORT_ORDER.INVALID),
 }

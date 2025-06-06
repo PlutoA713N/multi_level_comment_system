@@ -5,21 +5,14 @@ import {createApiError} from "../../factory/create.api.error";
 import HTTP from "http-status-codes";
 import {POST} from "../../constants/error.constants";
 import {POST_ERROR} from "../../constants/error.details.constants";
+import {Types} from "mongoose";
 
-export async function postCommentService(postId: string, text: string) {
-
-    const {isExists} = await checkFieldExists(PostModel, '_id', postId);
-
-    if (!isExists) {
-        throw createApiError({
-            status: HTTP.NOT_FOUND,
-            code: POST.NOT_FOUND,
-            detail: POST_ERROR.NOT_FOUND
-        })
-    }
-
-    const postComment = new CommentModel({ postId: postId, text });
+export async function postCommentService(postId: number, text: string, userId: Types.ObjectId) {
+    const postComment = new CommentModel({ postId: postId, text, userId });
     const savedComment = await postComment.save();
 
-    return {newComment: savedComment};
+    const commentObject = savedComment.toObject();
+    const {_id, __v, userId: _, ...comment} = commentObject;
+
+    return {comment};
 }

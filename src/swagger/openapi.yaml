@@ -63,7 +63,7 @@ paths:
       tags:
         - Auth
       security:
-        - BearerAuth: []
+        - BearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -115,6 +115,48 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      summary: Get comments of a post
+      tags:
+        - Auth
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+          description: The id of the post to get comments for
+        - name: sortBy
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ createdAt, repliesCount ]
+            default: createdAt
+          description: The field to sort comments by
+        - name: sortOrder
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ asc, desc ]
+            default: asc
+          description: The sorting order (ascending or descending)
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/GetCommentsSuccess'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /api/posts/{postId}/comments/{commentId}/reply:
     post:
       summary: Create a reply to comment
@@ -154,6 +196,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/InternalServerError'
+
 
 components:
   securitySchemes:
@@ -318,6 +361,20 @@ components:
           description: reply to the comment
           example: this is my reply to the comment.
 
+    getCommentsRequest:
+      type: object
+      properties:
+        sortBy:
+          type: string
+          enum: [ createdAt, commentId ]
+          description: "The field to sort comments by"
+        sortOrder:
+          type: string
+          enum: [ asc, desc ]
+          description: "The sorting order (ascending or descending)"
+      required: [ ]
+
+
   responses:
     RegisterSuccess:
       description: Successful registration
@@ -387,7 +444,7 @@ components:
               createdAt: 03-03-2023
               postId: "12345"
               parentCommentId: null
-              replies: []
+              replies: [ ]
               totalReplies: 0
             requestId: abcde-67890
             timestamp: 2025-06-03T12:10:00Z
@@ -413,6 +470,72 @@ components:
             requestId: abcde-67890
             timestamp: 2025-06-03T12:10:00Z
 
+    GetCommentsSuccess:
+      description: Successfully retrieved comments
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              result:
+                type: string
+                example: success
+              code:
+                type: string
+                example: COMMENTS_RETRIEVED
+              message:
+                type: string
+                example: Comments fetched successfully
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    text:
+                      type: string
+                      example: "This is a parent comment"
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2025-06-07T10:00:00Z"
+                    postId:
+                      type: integer
+                      example: 12345
+                    parentCommentId:
+                      type: integer
+                      nullable: true
+                      example: null
+                    replies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 11
+                          text:
+                            type: string
+                            example: "This is a reply"
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: "2025-06-07T11:00:00Z"
+                    totalReplies:
+                      type: integer
+                      example: 2
+              requestId:
+                type: string
+                example: abcde-12345
+              timestamp:
+                type: string
+                format: date-time
+                example: "2025-06-07T12:10:00Z"
 
     ValidationError:
       description: Validation error

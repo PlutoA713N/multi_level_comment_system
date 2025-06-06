@@ -47,13 +47,31 @@ export const POST_VALIDATION_MESSAGES = {
         EMPTY: "text value cannot be empty",
         LENGTH: "text must be at least 2 characters long",
     },
-    POSTID: {
-        REQUIRED: "PostID is required in the params",
-        TYPE: 'params post id must be a valid MongoDB ObjectId',
-        EMPTY: "PostID cannot be empty",
-
+    POST_ID: {
+        REQUIRED: "postId is required in the URL parameters.",
+        TYPE: "postId in params must be an integer.",
+        EMPTY: "postId in params cannot be empty.",
+    },
+    COMMENT_ID: {
+        REQUIRED: "commentId is required.",
+        TYPE: "commentId must be an integer.",
+        EMPTY: "commentId cannot be empty.",
     }
 }
+
+
+export const QUERY_VALIDATION_MESSAGES = {
+    SORT_BY: {
+        TYPE: 'sortBy value must be a string',
+        EMPTY: 'sortBy query value cannot be empty',
+        INVALID: 'sortBy value must be "createdAt" or "repliesCount"',
+    },
+    SORT_ORDER: {
+        TYPE: 'sortOrder value must be a string',
+        EMPTY: 'sortOrder query value cannot be empty',
+        INVALID: 'sortOrder value must be "asc" or "desc"',
+    },
+};
 
 
 export const USER_ERROR_DETAILS = {
@@ -63,10 +81,12 @@ export const USER_ERROR_DETAILS = {
 }
 
 export const HTTP_ERROR_DETAILS = {
-    TOO_MANY_REQUESTS: 'Too many requests, please try again later.',
-    TOO_MANY_LOGIN_ATTEMPTS: 'You’ve exceeded the number of login attempts. Please wait before retrying.',
-    TOO_MANY_COMMENT_ATTEMPTS: 'You’ve exceeded the allowed number of comments. Please slow down and try again later.',
-}
+    TOO_MANY_REQUESTS: 'You’ve made too many requests in a short period. Please wait and try again.',
+    TOO_MANY_LOGIN_ATTEMPTS: 'Too many login attempts detected. Please wait a while before trying again.',
+    TOO_MANY_COMMENT_ATTEMPTS: 'You’ve reached the comment limit. Please pause briefly before posting another comment.',
+    TOO_MANY_REPLY_ATTEMPTS: 'You’ve replied too frequently. Please wait a moment before sending more replies.'
+};
+
 
 export const MONGO_ERROR_DETAILS = {
     MONGO_DATABASE_ERROR: "MongoDB connection failed",
@@ -95,5 +115,8 @@ export const POST_ERROR = {
     NOT_FOUND: "The post you are trying to comment on does not exist."
 }
 
+export const COMMENT_ERROR = {
+    NOT_FOUND: "The commentId you are trying to reply on does not exist."
+}
 
 export type ErrorDetails = typeof VALIDATION_ERROR_DETAILS[keyof typeof VALIDATION_ERROR_DETAILS]

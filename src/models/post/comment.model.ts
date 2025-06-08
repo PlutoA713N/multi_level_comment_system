@@ -35,6 +35,12 @@ const commentSchema = new Schema<IComment>({
     totalReplies: { type: Number, default: 0 },
 });
 
+commentSchema.index({ postId: 1, parentCommentId: 1 });
+commentSchema.index({ parentCommentId: 1, createdAt: -1 });
+commentSchema.index({ commentId: 1}, {unique: true});
+commentSchema.index({ totalReplies: -1 });
+
+
 // 3. Add plugin properly
 const AutoIncrement = mongooseSequence(mongoose);
 commentSchema.plugin(AutoIncrement, { inc_field: "commentId" });

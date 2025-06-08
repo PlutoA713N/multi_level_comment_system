@@ -20,7 +20,7 @@ export async function getPostCommentsController(req: Request, res: Response, nex
             : "createdAt";
 
         const rawSortOrder = req.query.sortOrder as string | undefined;
-        const sortOrder: SortOrder = rawSortOrder === "desc" ? "desc" : "asc";
+        const sortOrder: SortOrder = rawSortOrder === "asc" ? "asc" : "desc";
 
         const comments = await getPostCommentsService(Number(postId), sortBy, sortOrder);
 

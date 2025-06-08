@@ -1,5 +1,10 @@
 import { CommentModel } from "../../models/post/comment.model";
-import { SortOrder } from "mongoose";
+import {PipelineStage, SortOrder} from "mongoose";
+import {
+    lookupReplies,
+    matchTopLevelComments,
+    projectFinalShape, sortParentComments,
+} from "../../models/mongo_aggregation_pipelines";
 
 type SortField = "createdAt" | "repliesCount";
 type SortDirection = "asc" | "desc";
@@ -28,38 +33,13 @@ export async function getPostCommentsService(
     const sortValue: SortOrder = sortOrder === "asc" ? 1 : -1;
     const sortField = sortBy === "repliesCount" ? "totalReplies" : "createdAt";
 
-    const parentComments = await CommentModel
-        .find({ postId, parentCommentId: null })
-        .sort({ [sortField]: sortValue })
-        .lean()
-        .exec()
+    const pipeline : PipelineStage[] = [
+        matchTopLevelComments(postId),
+        sortParentComments(sortField, sortValue),
+        lookupReplies,
+        projectFinalShape
+    ]
 
-    const commentsWithReplies = await Promise.all(
-        parentComments.map(async (comment) => {
-            const replies = await CommentModel.find({ parentCommentId: comment.commentId })
-                .sort({ createdAt: -1 })
-                .limit(2)
-                .select({ commentId: 1, text: 1, createdAt: 1 })
-                .lean()
-                .exec()
-
-            const formattedReplies: FormattedReply[] = replies.map((reply) => ({
-                id: reply.commentId,
-                text: reply.text,
-                createdAt: reply.createdAt,
-            }));
-
-            return {
-                id: comment.commentId,
-                text: comment.text,
-                createdAt: comment.createdAt,
-                postId: comment.postId,
-                parentCommentId: null,
-                replies: formattedReplies,
-                totalReplies: comment.totalReplies,
-            };
-        })
-    );
-
-    return commentsWithReplies;
+    const comments = await CommentModel.aggregate(pipeline).exec()
+    return comments as FormattedComment[]
 }

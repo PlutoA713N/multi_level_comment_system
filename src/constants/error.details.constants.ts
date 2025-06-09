@@ -71,6 +71,12 @@ export const QUERY_VALIDATION_MESSAGES = {
         EMPTY: 'sortOrder query value cannot be empty',
         INVALID: 'sortOrder value must be "asc" or "desc"',
     },
+    PAGE: {
+        TYPE: 'page value must be a positive integer',
+    },
+    PAGE_SIZE: {
+        TYPE: 'pageSize must be a positive integer between 1 and 50',
+    }
 };
 
 

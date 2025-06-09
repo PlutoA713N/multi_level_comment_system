@@ -13,6 +13,7 @@ export interface ICreateApiErrorParams {
     type?: string;
     isOperational?: boolean;
     timestamp?: string;
+    meta?: any[];
 }
 
 export function createApiError({
@@ -24,6 +25,7 @@ export function createApiError({
                                    errors,
                                    type,
                                    isOperational,
+                                   meta
                                }: ICreateApiErrorParams): ApiError {
     const requestId = getRequestId()
     const time = getTimestamp()
@@ -33,6 +35,7 @@ export function createApiError({
         title : title || getReasonPhrase(status),
         detail,
         instance,
+        meta,
         errors,
         type: type || `urn:error:${code}`,
         isOperational: isOperational ?? true,

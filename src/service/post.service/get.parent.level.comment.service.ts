@@ -10,8 +10,6 @@ export async function getParentLevelCommentService(postId: number, page: number,
     const totalReplies = await CommentModel.countDocuments({postId, parentCommentId: commentId});
     const totalPages = Math.max(1, Math.ceil(totalReplies / pageSize));
 
-    console.log({totalPages, totalReplies, page, pageSize }, Math.ceil(totalReplies / pageSize));
-
     if(page > totalPages && totalReplies > 0) {
         throw createApiError({
             status: HTTP.BAD_REQUEST,

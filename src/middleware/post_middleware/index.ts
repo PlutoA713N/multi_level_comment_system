@@ -22,3 +22,10 @@ export const validateGetPostsRules: ValidationChain[] = [
     queryValidators.sortBy(),
     queryValidators.sortOrder()
 ]
+
+export const validateGetCommentRules: ValidationChain[] = [
+        commentValidators.postId(),
+        commentValidators.commentId(),
+        queryValidators.page(),
+        queryValidators.pageSize(),
+]

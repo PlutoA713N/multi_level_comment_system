@@ -5,6 +5,7 @@ export class ApiError extends Error {
     public readonly code: string;
     public readonly detail?: string;
     public readonly instance?: string;
+    public readonly meta?: any[];
     public readonly errors?: any[];
     public readonly isOperational: boolean;
     public readonly requestId?: string;
@@ -17,6 +18,7 @@ export class ApiError extends Error {
                     code,
                     detail,
                     instance,
+                    meta,
                     errors,
                     isOperational = true,
                     requestId,
@@ -28,6 +30,7 @@ export class ApiError extends Error {
         code: string;
         detail?: string;
         instance?: string;
+        meta?: any[];
         errors?: any[];
         isOperational?: boolean;
         requestId?: string;
@@ -40,6 +43,7 @@ export class ApiError extends Error {
         this.code = code;
         this.detail = detail;
         this.instance = instance;
+        this.meta = meta;
         this.errors = errors;
         this.isOperational = isOperational;
         this.requestId = requestId;

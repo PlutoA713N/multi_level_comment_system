@@ -35,6 +35,7 @@ export const errorHandler = (
             errors: err.errors || [],
             requestId,
             timestamp: err.timestamp,
+            meta: err.meta,
         });
 
         return

@@ -197,6 +197,58 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /api/posts/{postId}/comments/{commentId}/expand:
+    get:
+      summary: Get expanded top-level comments
+      tags:
+        - Auth
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+          description: The ID of the post to get comments from
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "2"
+          description: The ID of the comment to expand
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: The page number for pagination (default is 1)
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 3
+            minimum: 1
+            maximum: 100
+          description: The number of replies per page (default is 3)
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/GetTopLevelComments'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+
 
 components:
   securitySchemes:
@@ -374,6 +426,39 @@ components:
           description: "The sorting order (ascending or descending)"
       required: [ ]
 
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "64f0cabc1234abcd5678ef90"
+        postId:
+          type: string
+          example: "1"
+        parentCommentId:
+          type: string
+          nullable: true
+          example: "2"
+        authorId:
+          type: string
+          example: "user_123"
+        content:
+          type: string
+          example: "This is a reply to the original comment."
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-06-09T10:15:30Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-06-09T11:00:00Z"
+        repliesCount:
+          type: integer
+          example: 3
+        isEdited:
+          type: boolean
+          example: false
 
   responses:
     RegisterSuccess:
@@ -536,6 +621,76 @@ components:
                 type: string
                 format: date-time
                 example: "2025-06-07T12:10:00Z"
+
+    GetTopLevelComments:
+      description: Comments expanded successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              result:
+                type: string
+                example: success
+              code:
+                type: string
+                example: COMMENTS_EXPANDED
+              message:
+                type: string
+                example: Comments expanded successfully.
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+              meta:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                    example: 1
+                  pageSize:
+                    type: integer
+                    example: 10
+                  totalReplies:
+                    type: integer
+                    example: 42
+                  totalPages:
+                    type: integer
+                    example: 5
+                  hasNextPage:
+                    type: boolean
+                    example: true
+                  hasPreviousPage:
+                    type: boolean
+                    example: false
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.example.com/api/posts/1/comments/2/expand?page=1&pageSize=10
+                      first:
+                        type: string
+                        example: https://api.example.com/api/posts/1/comments/2/expand?page=1&pageSize=10
+                      last:
+                        type: string
+                        example: https://api.example.com/api/posts/1/comments/2/expand?page=5&pageSize=10
+                      previous:
+                        type: string
+                        example: https://api.example.com/api/posts/1/comments/2/expand?page=1&pageSize=10
+                      next:
+                        type: string
+                        example: https://api.example.com/api/posts/1/comments/2/expand?page=2&pageSize=10
+              requestId:
+                type: string
+                example: abc123req-id
+              timestamp:
+                type: string
+                format: date-time
+                example: "2025-06-09T12:34:56Z"
 
     ValidationError:
       description: Validation error

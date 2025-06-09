@@ -10,4 +10,6 @@ export const CONSTANTS = {
     REPLIES_COUNT: 'repliesCount',
     ASC: 'asc',
     DESC: 'desc',
+    PAGE: 'page',
+    PAGE_SIZE: 'pageSize',
 }

@@ -1,5 +1,6 @@
 import {Router} from "express";
 import {
+    validateGetCommentRules,
     validateGetPostsRules,
     validatePostCommentRules,
     validatePostRules,
@@ -19,6 +20,7 @@ import {
 } from "../../middleware/search_document_middleware";
 import {replyCommentController} from "../../controller/post/reply.comment.controller";
 import {getPostCommentsController} from "../../controller/post/get.post.comments.controller";
+import {getParentLevelCommentsController} from "../../controller/post/get-parent-level-comments.controller";
 
 const router = Router();
 
@@ -29,5 +31,7 @@ router.post("/:postId/comments", postCommentRateLimiter, authenticationHandler, 
 router.post("/:postId/comments/:commentId/reply", replyCommentRateLimiter, authenticationHandler, ...validateReplyCommentRules, validateResult, lookupPostReplyCommentDocuments, replyCommentController );
 
 router.get("/:postId/comments", authenticationHandler, ...validateGetPostsRules, validateResult, lookupPostDocument, getPostCommentsController)
+
+router.get("/:postId/comments/:commentId/expand", ...validateGetCommentRules, validateResult, lookupPostReplyCommentDocuments, getParentLevelCommentsController );
 
 export default router;

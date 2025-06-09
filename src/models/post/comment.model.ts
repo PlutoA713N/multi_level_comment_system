@@ -1,7 +1,6 @@
 import mongoose, { Schema, Types, Document, Model } from "mongoose";
 import mongooseSequence from "mongoose-sequence";
 
-// 1. Define the interface for a Comment document
 export interface IComment extends Document {
     userId: Types.ObjectId;
     text: string;
@@ -17,7 +16,6 @@ export interface IComment extends Document {
     totalReplies: number;
 }
 
-// 2. Define schemas
 const replySchema = new Schema({
     id: { type: Number, required: true },
     text: { type: String, required: true },
@@ -37,13 +35,11 @@ const commentSchema = new Schema<IComment>({
 
 commentSchema.index({ postId: 1, parentCommentId: 1 });
 commentSchema.index({ parentCommentId: 1, createdAt: -1 });
-commentSchema.index({ commentId: 1}, {unique: true});
+// commentSchema.index({ commentId: 1}, {unique: true});
 commentSchema.index({ totalReplies: -1 });
 
 
-// 3. Add plugin properly
 const AutoIncrement = mongooseSequence(mongoose);
 commentSchema.plugin(AutoIncrement, { inc_field: "commentId" });
 
-// 4. Export the model with full typing
 export const CommentModel: Model<IComment> = mongoose.model("Comment", commentSchema);

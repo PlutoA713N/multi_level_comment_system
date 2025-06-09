@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from "express";
+import { Response, NextFunction} from "express";
 import logger from "../../logger";
 import {postCommentService} from "../../service/post.service/post.comment.service";
 import HTTP from "http-status-codes";

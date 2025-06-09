@@ -46,6 +46,7 @@ export const commentValidators = {
             .bail()
             .isInt()
             .withMessage(POST_VALIDATION_MESSAGES.POST_ID.TYPE)
+            .toInt()
     ,
 
     text: () =>
@@ -75,6 +76,7 @@ export const commentValidators = {
             .bail()
             .isInt()
             .withMessage(POST_VALIDATION_MESSAGES.COMMENT_ID.TYPE)
+            .toInt()
 
 }
 
@@ -101,4 +103,19 @@ export const queryValidators = {
             .bail()
             .isIn([CONSTANTS.ASC, CONSTANTS.DESC])
             .withMessage(QUERY_VALIDATION_MESSAGES.SORT_ORDER.INVALID),
+
+    page: () =>
+        query(CONSTANTS.PAGE)
+            .default(1)
+            .isInt({ min: 1})
+            .withMessage(QUERY_VALIDATION_MESSAGES.PAGE.TYPE)
+            .toInt(),
+
+    pageSize: () =>
+        query(CONSTANTS.PAGE_SIZE)
+            .default(2)
+            .isInt({ min: 1, max: 50 })
+            .withMessage(QUERY_VALIDATION_MESSAGES.PAGE_SIZE.TYPE)
+            .toInt()
+
 }

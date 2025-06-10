@@ -13,8 +13,7 @@ import healthRoutes from "./routes/health.routes";
 import userRoutes from "./routes/user/index"
 import postRoutes from "./routes/post/index"
 
-
-export const app = express();
+const app = express();
 
 app.use(requestIdMiddleware)
 app.use(helmet(helmetOptions))
@@ -34,3 +33,5 @@ app.use("/api/posts", postRoutes)
 
 app.use(notFoundMiddleware)
 app.use(errorHandler)
+
+export {app}

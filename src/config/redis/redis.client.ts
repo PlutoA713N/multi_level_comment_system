@@ -4,12 +4,19 @@ import logger from "../../logger";
 import {AppError} from "../../class/app.error.class";
 import HTTP from "http-status-codes";
 import { REDIS_ERROR_CODES} from "../../constants/error.constants";
+import RedisMock from "ioredis-mock";
 
+const testEnv = getEnv("NODE_ENV") === "test";
 let redisClient: RedisClientType | null = null;
 
-export async function initRedis() {
-    const url = getEnv('REDIS_CLIENT_URL');
+if(testEnv) {
+    redisClient = new RedisMock() as unknown as RedisClientType;
+    logger.info('Using mock Redis for tests');
+}
 
+export async function initRedis() {
+    if(testEnv) return
+    const url = getEnv('REDIS_CLIENT_URL');
     redisClient = createClient({ url });
 
     redisClient.on('error', (err) => logger.error('Redis error:', err));

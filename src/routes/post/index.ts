@@ -32,6 +32,6 @@ router.post("/:postId/comments/:commentId/reply", replyCommentRateLimiter, authe
 
 router.get("/:postId/comments", authenticationHandler, ...validateGetPostsRules, validateResult, lookupPostDocument, getPostCommentsController)
 
-router.get("/:postId/comments/:commentId/expand", ...validateGetCommentRules, validateResult, lookupPostReplyCommentDocuments, getParentLevelCommentsController );
+router.get("/:postId/comments/:commentId/expand", authenticationHandler, ...validateGetCommentRules, validateResult, lookupPostReplyCommentDocuments, getParentLevelCommentsController );
 
 export default router;

@@ -5,7 +5,7 @@ info:
   description: API documentation with OpenAPI and Express
 
 servers:
-  - url: http://localhost:5000
+  - url: https://multi-level-comment-system-o0fz.onrender.com
     description: Local server
 
 paths:
